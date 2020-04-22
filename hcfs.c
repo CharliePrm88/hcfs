@@ -9,24 +9,49 @@
 #include <stdlib.h>
 #include <errno.h>
 
-int hcfs_getattr(const char *path, struct stat *st){ /*Vedere man 2 stat*/
-	st->st_dev= getdev(); 
+/** Get file attributes.
+	 *
+	 * Similar to stat().  The 'st_dev' and 'st_blksize' fields are
+	 * ignored.	 The 'st_ino' field is ignored except if the 'use_ino'
+	 * mount option is given.
+	 */
+static int hcfs_getattr(const char *path, struct stat *st){ /*Vedere man 2 stat*/
+	/*st->st_dev= getdev(); 
 	st->st_ino= getino();
-	st->st_mode = getmode();
-	st->st_nlink= getnlink();
 	st->st_uid=getuid();
 	st->st_gid=getgid();
     st->st_rdev=getrdev();
-	st->st_size=getsize():
 	st->st_blksize=getblocksize();
 	st->st_blocks=getblocks();
+	st->st_ctime=time(NULL);*/
+	st->st_uid=getuid();
+	st->st_gid=getgid();
 	st->st_atime=time(NULL);
 	st->st_mtime=time(NULL);
-	st->st_ctime=time(NULL);
+	if(strcmp( path, "/")==0 || is_dir(path)==1)
+	{
+		st->st_mode=S_IFDIR |0755;
+		st->st_nlink=2;
+	}
+	else if (is_file(path) == 1){
+		st->st_mode = S_IFREG | 0644;
+		st->st_nlink = 1;
+		st->st_size = 1024;
+	}
+	else
+	{
+		return -ENOENT;
+	}
+	
+	return 0;
+}
+
+static int hcfs_readdir( const char *path, void *buffer, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi ){
+
 }
 
 
-static struct fuse_operations operations = { /*Decommentare ogni volta che si scrive una delle funzioni*/
+static struct fuse_operations operations = { /*uncomment when you write the corrispondent function*/
     .getattr		= hcfs_getattr,
 	//.readlink 	= hcfs_readlink,
 	//.mknod		= hcfs_mknod,
