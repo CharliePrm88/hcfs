@@ -47,8 +47,24 @@ static int hcfs_getattr(const char *path, struct stat *st){ /*Vedere man 2 stat*
 }
 
 static int hcfs_readdir( const char *path, void *buffer, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi ){
-
+	filler( buffer, ".", NULL, 0 ); // Current Directory
+	filler( buffer, "..", NULL, 0 ); // Parent Directory
+	
+	if ( strcmp( path, "/" ) == 0 )
+	{
+		filler( buffer, "file54", NULL, 0 ); //per ora ho messo questi due "file"
+		filler( buffer, "file349", NULL, 0 );
+	}
+	
+	return 0;
 }
+
+static int hcfs_read( const char *path, char *buffer, size_t size, off_t offset, struct fuse_file_info *fi )
+{
+	
+}
+
+
 
 
 static struct fuse_operations operations = { /*uncomment when you write the corrispondent function*/
@@ -65,7 +81,7 @@ static struct fuse_operations operations = { /*uncomment when you write the corr
 	//.chown		= hcfs_chown,
 	//.truncate		= hcfs_truncate,
 	//.open			= hcfs_open,
-	//.read			= hcfs_read,
+	.read			= hcfs_read,
 	//.write		= hcfs_write,
 	//.statfs		= hcfs_statfs,
 	//.flush		= hcfs_flush,
@@ -76,7 +92,7 @@ static struct fuse_operations operations = { /*uncomment when you write the corr
 	//.listxattr	= hcfs_listxattr,
 	//.removexattr	= hcfs_removexattr,
 	//.opendir		= hcfs_opendir,
-    //.readdir		= hcfs_readdir,
+    .readdir		= hcfs_readdir,
 	//.releasedir 	= hcfs_releasedir,
 	//.fsyncdir 	= hcfs_fsyncdir,
 	//.init 		= hcfs_init,
