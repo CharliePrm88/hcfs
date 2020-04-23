@@ -136,7 +136,7 @@ static int hcfs_getattr(const char *path, struct stat *st){ /*Vedere man 2 stat*
 	 * Introduced in version 2.3
 	 * The "flags" argument added in version 3.0
 	 */
-	
+
 static int hcfs_readdir( const char *path, void *buffer, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi ){
 	filler( buffer, ".", NULL, 0 ); // Current Directory
 	filler( buffer, "..", NULL, 0 ); // Parent Directory
@@ -231,7 +231,7 @@ static struct fuse_operations operations = { /*uncomment when you write the corr
     .getattr		= hcfs_getattr,
 	//.readlink 	= hcfs_readlink,
 	.mknod			= hcfs_mknod,
-    //.mkdir		= hcfs_mkdir,
+    .mkdir		= hcfs_mkdir,
     //.unlink		= hcfs_unlink,
 	//.rmdir 		= hcfs_rmdir,
 	//.symlink 		= hcfs_symlink,
